@@ -1,4 +1,4 @@
-import pygame, gameobj
+import pygame, gameobj, math, random
 
 class toeEngine:
 
@@ -11,6 +11,7 @@ class toeEngine:
         self.xsurface = "images/xmark.png"
         self.osurface = "images/omark.png"
         self.gameover = False
+        self.aiboard = []
 
         self.boardlocations = {	"topleft": [10,10],
                                 "topmid": [210, 10],
@@ -46,6 +47,10 @@ class toeEngine:
         self.p2score.setSurface(text)
         self.uicomponents.append(self.p1score)
         self.uicomponents.append(self.p2score)
+
+        #fill out the board the 'ai' will run on.
+        for i in range(9):
+            self.aiboard.append(0)
 
     def getBoardSurface(self):
         return self.board.getSurface()
@@ -93,20 +98,28 @@ class toeEngine:
                 return
 
         if self.checkVictory() != -1:
+            self.playerturn = True
             return
 
         xy = self.boardlocations[self.__transMouse(coords)]
 
+        
         #abort click event on game board if piece is already in place.
         for i in self.getGameObjects():
             if i.getCoords() == xy:
                 return
+        self.updateAIBoard(self.__transMouse(coords))
 
         self.addGameObject(piece, xy[0], xy[1])
 
         self.playerturn = not self.playerturn
-
-        self.checkVictory()
+        vic = self.checkVictory()
+        if vic >=0:
+            self.playerturn = True
+            
+        #cats game
+        if vic == -2:
+            self.clearBoard()
 
     def __transMouse(self, coords):
 
@@ -169,7 +182,12 @@ class toeEngine:
                 self.updateScoreboard()
             return 1
         
-        return -1
+        for i in range(9):
+            if self.aiboard[i] == 0:
+                return -1
+        
+        return -2
+
 
     def checkMoves(self, moves):
         
@@ -225,6 +243,9 @@ class toeEngine:
         self.playerturn = True
         self.gameover = not self.gameover
 
+        for i in range(0,9):
+            self.aiboard[i] = 0
+
     def updateScoreboard(self):
         font = pygame.font.SysFont("verdanams", 72)
 
@@ -234,7 +255,80 @@ class toeEngine:
 
             if i.name == "P2":
                 i.setSurface(font.render(str(self.score[1]), True, (0,0,0)))
+    
+    def AIMove(self):
+        gameobs = self.getGameObjects()
+
+        ourmove = random.randint(0, 8)
+        while self.aiboard[ourmove] == 1:
+            ourmove = random.randint(0, 8)
+
+        #print("AI move: "+str(ourmove))
+        #self.aiboard[ourmove] = 1
+        print(self.aiboard)
+        print(ourmove)
+        coords = [100,100]
+        if ourmove < 3:
+            #print("1-3")
+            coords = [(ourmove+1)*151, 100]
+            self.onClick(coords)
+            return
+        if ourmove < 6:
+           # print("4-6")
+            ourmove = ourmove -2
+            print(ourmove*160)
+            coords = [(ourmove)*160,300]
+            self.onClick(coords)
+            return
+
+        if ourmove < 9:
+           # print("5-9")
+            ourmove = ourmove -5
+            print(ourmove*152)
+            coords = [(ourmove)*160,500]
+            self.onClick(coords)
+            return
+
         
+
+    def updateAIBoard(self, move):
+
+        if move == "topleft":
+            self.aiboard[0] = 1
+            print(move)
+            return
+        if move == "topmid":
+            self.aiboard[1] = 1
+            print(move)
+            return
+        if move == "topright":
+            self.aiboard[2] = 1
+            print(move)
+            return
+        if move == "midleft":
+            self.aiboard[3] = 1
+            print(move)
+            return
+        if move == "midmid":
+            self.aiboard[4] = 1
+            print(move)
+            return
+        if move == "midright":
+            self.aiboard[5] = 1
+            print(move)
+            return
+        if move == "botleft":
+            self.aiboard[6] = 1
+            print(move)
+            return
+        if move == "botmid":
+            self.aiboard[7] = 1
+            print(move)
+            return
+        if move == "botright":
+            self.aiboard[8] = 1
+            print(move)
+            return
             
 
 

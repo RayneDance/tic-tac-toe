@@ -19,6 +19,9 @@ while 1:
 			coords = pygame.mouse.get_pos()
 			engine.onClick(coords)
 	
+	if not engine.playerturn:
+		engine.AIMove()
+
 	screen.fill(white)
 	screen.blit(engine.getBoardSurface(), engine.getBoardRect())
 	for i in engine.getGameObjects():
