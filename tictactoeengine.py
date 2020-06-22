@@ -165,6 +165,8 @@ class toeEngine:
                 left += 1
             if i[3:6] == "rig":
                 right += 1
+            if i == "mid":
+                mid += 1
                 
         if bot > 2 or top > 2 or mid > 2 or right > 2 or left > 2:
             return 1
