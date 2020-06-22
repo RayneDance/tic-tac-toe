@@ -6,9 +6,11 @@ class toeEngine:
 
         self.gameobjects = []
         self.uicomponents = []
+        self.score = [0,0]
         self.playerturn = True
         self.xsurface = "images/xmark.png"
         self.osurface = "images/omark.png"
+        self.gameover = False
 
         self.boardlocations = {	"topleft": [10,10],
                                 "topmid": [210, 10],
@@ -23,12 +25,27 @@ class toeEngine:
         self.board = gameobj.gameObj("Board")
         self.board.setSurface("images/gameboard.png")
         
+        #new game button
         self.newgame = gameobj.gameObj("New Game")
         self.newgame.setSurface("images/newgame.png")
         self.newgame.setCoords([10, 610])
 
         self.uicomponents.append(self.newgame)
-        
+
+        # scoreboard
+
+        self.scoreboard = gameobj.gameObj("Scoreboard", 200, 600)
+        self.scoreboard.setSurface("images/scoreboard.png")
+        self.uicomponents.append(self.scoreboard)
+
+        self.p1score = gameobj.gameObj("P1", 210, 600)
+        self.p2score = gameobj.gameObj("P2", 340, 600)
+        font = pygame.font.SysFont("verdanams", 72)
+        text = font.render("0", True, (0,0,0))
+        self.p1score.setSurface(text)
+        self.p2score.setSurface(text)
+        self.uicomponents.append(self.p1score)
+        self.uicomponents.append(self.p2score)
 
     def getBoardSurface(self):
         return self.board.getSurface()
@@ -139,49 +156,81 @@ class toeEngine:
             i += 1
         
         if self.checkMoves(playermoves):
+            if not self.gameover:
+                self.gameover = not self.gameover
+                self.score[0] += 1
             return 0
         elif self.checkMoves(computermoves):
+            if not self.gameover:
+                self.gameover = not self.gameover
+                self.score[1] += 1
             return 1
         
         return -1
 
     def checkMoves(self, moves):
-        #counters
-        bot = 0
-        mid = 0
-        top = 0
-        left = 0
-        right = 0
-
+        
+        grid = []
+        for i in range(10):
+            grid.append(0)
+        
         for i in moves:
-            if i[0:3] == "top":
-                top += 1
-            elif i[0:3] == "mid":
-                mid += 1
-            elif i[0:3] == "bot":
-                bot += 1
-            
-            if i[3:6] == "lef":
-                left += 1
-            if i[3:6] == "rig":
-                right += 1
-            if i == "mid":
-                mid += 1
-                
-        if bot > 2 or top > 2 or mid > 2 or right > 2 or left > 2:
-            return 1
-        if "topleft" in moves and "midmid" in moves and "botright" in moves:
-            return 1
-        if "botleft" in moves and "midmid" in moves and "topright" in moves:
-            return 1
+            if i == "topleft":
+                grid[0] = 1
+            elif i == "topmid":
+                grid[1] = 1
+            elif i == "topright":
+                grid[2] = 1
+            elif i == "midleft":
+                grid[3] = 1
+            elif i == "midmid":
+                grid[4] = 1
+            elif i == "midright":
+                grid[5] = 1
+            elif i == "botleft":
+                grid[6] = 1
+            elif i == "botmid":
+                grid[7] = 1
+            elif i == "botright":
+                grid[8] = 1
 
-        return 0
+        if grid[0]:
+            if grid[1] and grid[2]:
+                return True
+            elif grid[3] and grid[6]:
+                return True
+            elif grid[4] and grid[8]:
+                return True
+        
+        if grid[4]:
+            if grid[3] and grid[5]:
+                return True
+            elif grid[1] and grid[7]:
+                return True
+            elif grid[2] and grid[6]:
+                return True
+
+        if grid[6] and grid[7] and grid[8]:
+            return True
+        if grid[2] and grid[5] and grid [8]:
+            return True
+
+        return False
 
     def clearBoard(self):
         self.gameobjects = []
         self.playerturn = True
+        self.gameover = not self.gameover
 
+    def updateScoreboard(self):
+        font = pygame.font.SysFont("verdanams", 72)
 
+        for i in self.uicomponents:
+            if i.name == "P1":
+                i.setSurface(font.render(str(self.score[0]), True, (0,0,0)))
+
+            if i.name == "P2":
+                i.setSurface(font.render(str(self.score[1]), True, (0,0,0)))
         
             
 

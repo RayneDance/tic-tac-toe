@@ -15,6 +15,7 @@ while 1:
 		if event.type == pygame.QUIT: sys.exit()
 
 		if event.type == pygame.MOUSEBUTTONUP:
+			engine.updateScoreboard()
 			coords = pygame.mouse.get_pos()
 			engine.onClick(coords)
 	

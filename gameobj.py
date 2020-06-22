@@ -24,7 +24,10 @@ class gameObj:
         return self.image
     
     def setSurface(self, image):
-        self.image = pygame.image.load(image)
+        if isinstance(image, str):
+            self.image = pygame.image.load(image)
+        else:
+            self.image = image
 
     def getRect(self):
         return self.image.get_rect()
