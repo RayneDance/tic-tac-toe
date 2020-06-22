@@ -38,8 +38,8 @@ class toeEngine:
         self.scoreboard.setSurface("images/scoreboard.png")
         self.uicomponents.append(self.scoreboard)
 
-        self.p1score = gameobj.gameObj("P1", 210, 600)
-        self.p2score = gameobj.gameObj("P2", 340, 600)
+        self.p1score = gameobj.gameObj("P1", 210, 630)
+        self.p2score = gameobj.gameObj("P2", 350, 630)
         font = pygame.font.SysFont("verdanams", 72)
         text = font.render("0", True, (0,0,0))
         self.p1score.setSurface(text)
@@ -65,6 +65,7 @@ class toeEngine:
     def addGameObject(self, piece, x, y):
         self.gameobjects.append(gameobj.gameObj(None, x, y, piece))
 
+        #adds names to any added pieces
         for i in self.boardlocations.items():
             if i[1] == [x, y]:
                 self.gameobjects[len(self.gameobjects)-1].setName(i[0])
@@ -159,11 +160,13 @@ class toeEngine:
             if not self.gameover:
                 self.gameover = not self.gameover
                 self.score[0] += 1
+                self.updateScoreboard()
             return 0
         elif self.checkMoves(computermoves):
             if not self.gameover:
                 self.gameover = not self.gameover
                 self.score[1] += 1
+                self.updateScoreboard()
             return 1
         
         return -1
