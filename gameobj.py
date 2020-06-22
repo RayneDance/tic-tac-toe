@@ -10,6 +10,9 @@ class gameObj:
 
     def getName(self):
         return self.name
+    
+    def setName(self, name):
+        self.name = name
 
     def getParental(self):
         return self.parental
@@ -26,14 +29,11 @@ class gameObj:
     def getRect(self):
         return self.image.get_rect()
 
-    def setName(self, name):
-        self.name = name
-
     def setX(self, x):
-        self.x = x
+        self.setCoords([x, self.y])
 
     def setY(self, y):
-        self.y = y
+        self.setCoords([self.x, y])
     
     def getX(self):
         return self.x
