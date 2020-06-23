@@ -1,5 +1,5 @@
 /dev/
-/__pycache__
 /dist/
 *.pyc
-*.pyc
+__*
+__pycache__/
