@@ -96,10 +96,11 @@ class toeEngine:
             if coords[0] < 200:
                 self.clearBoard()
                 return
-
+        
         if self.checkVictory() != -1:
             self.playerturn = True
             return
+        
 
         xy = self.boardlocations[self.__transMouse(coords)]
 
@@ -108,6 +109,7 @@ class toeEngine:
         for i in self.getGameObjects():
             if i.getCoords() == xy:
                 return
+        
         self.updateAIBoard(self.__transMouse(coords))
 
         self.addGameObject(piece, xy[0], xy[1])
@@ -116,7 +118,7 @@ class toeEngine:
         vic = self.checkVictory()
         if vic >=0:
             self.playerturn = True
-            
+
         #cats game
         if vic == -2:
             self.clearBoard()
